@@ -1,24 +1,24 @@
 <div class="col-md-12">
+
     <div class="card card-primary">
         <div class="card-header">
             <h3 class="card-title">Cadastro de Cliente</h3>
         </div>
         <div class="card-body">
-        <form action="<?php echo URL; ?>clientes/update" method="POST">
+        <form action="<?php echo URL; ?>clientes/add" method="POST">
           <div class="row">
             <div class="col-sm-6">
-            <input type="hidden" name="cliente_id" value="<?php echo htmlspecialchars($cliente->id, ENT_QUOTES, 'UTF-8'); ?>" />
             <!-- text input -->
               <div class="form-group">
                  <label>Razão social </label>
-                 <input type="text" name="razao_social" value="<?php echo htmlspecialchars($cliente->razao_social, ENT_QUOTES, 'UTF-8'); ?>" required class="form-control"/>
+                 <input type="text" name="razao_social" value="" required class="form-control"/>
               </div>
             </div>
 
             <div class="col-sm-6">
                 <div class="form-group">
                      <label>Nome Fantasia</label>
-                    <input autofocus type="text" name="nome_fantasia" value="<?php echo htmlspecialchars($cliente->nome_fantasia, ENT_QUOTES, 'UTF-8'); ?>" required class="form-control" />
+                    <input autofocus type="text" name="nome_fantasia" value="" required class="form-control" />
                 </div>
             </div>
          </div>
@@ -27,19 +27,19 @@
             <div class="col-sm-4">
                <div class="form-group">
                     <label>E-mail</label>
-                    <input type="email" name="email" value="<?php echo htmlspecialchars($cliente->email, ENT_QUOTES, 'UTF-8'); ?>" id ="email" required class="form-control"/>
+                    <input type="email" name="email" value="" id ="email" required class="form-control"/>
                </div>
             </div>
             <div class="col-sm-4">
                <div class="form-group">
                   <label>Telefone</label>
-                  <input type="text" name="telefone" value="<?php echo htmlspecialchars($cliente->telefone, ENT_QUOTES, 'UTF-8'); ?>" id="telefone" class="form-control"/>
+                  <input type="text" name="telefone" value="" id="telefone" class="form-control"/>
                </div>
             </div>
             <div class="col-sm-4">
                <div class="form-group">
                   <label>CNPJ</label>
-                  <input type="text" name="cnpj" value="<?php echo htmlspecialchars($cliente->cnpj, ENT_QUOTES, 'UTF-8'); ?>" id="cnpj" class="form-control"/>
+                  <input type="text" name="cnpj" value="" id="cnpj" class="form-control"/>
                </div>
             </div>
         </div> <!--- end row 2 -->
@@ -49,24 +49,24 @@
 
                 <div class="col-sm-4">
                     <label>CEP</label>
-                    <input type="text" name="cep" value="<?php echo htmlspecialchars($endereco->cep, ENT_QUOTES, 'UTF-8'); ?>"   id ="cep" onblur="buscarEnderecoCepApi(this.value);" class="form-control"/>
+                    <input type="text" name="cep" value=""   id ="cep" onblur="buscarEnderecoCepApi(this.value);" class="form-control"/>
                 </div>
 
                 <div class="col-sm-8">
                     <label>Logradouro</label>
-                    <input type="text" name="logradouro" value="<?php echo htmlspecialchars($endereco->logradouro, ENT_QUOTES, 'UTF-8'); ?>"  id="logradouro"  required class="form-control"/>
+                    <input type="text" name="logradouro" value=""  id="logradouro"  required class="form-control"/>
                 </div>
             </div>
             <div class="row">
 
                 <div class="col-sm-4">
                     <label>Número</label>
-                    <input autofocus type="text" name="numero" value="<?php echo htmlspecialchars($endereco->numero, ENT_QUOTES, 'UTF-8'); ?>" id="numero"  required class="form-control" />
+                    <input autofocus type="text" name="numero" value="" id="numero"  required class="form-control" />
                 </div>
 
                 <div class="col-sm-8">
                     <label>Bairro</label>
-                    <input type="bairro" name="bairro" value="<?php echo htmlspecialchars($endereco->bairro, ENT_QUOTES, 'UTF-8'); ?>"  id ="bairro" required class="form-control"/>
+                    <input type="bairro" name="bairro" value=""  id ="bairro" required class="form-control"/>
                     </div>
             </div>
                <div class="row">
@@ -74,6 +74,7 @@
                 <div class="form-group">
                   <label for="estado">Estado</label>
                   <select class="custom-select form-control-border" name="estado" id="estado">
+                  <option value="">Informe seu estado</option>
                   <option value="AC">Acre</option>
                     <option value="AL">Alagoas</option>
                     <option value="AP">Amapá</option>
@@ -106,7 +107,7 @@
                 </div>
                 <div class="col-sm-4">
                     <label>Municipio</label>
-                    <input type="text" name="municipio" value="<?php echo htmlspecialchars($endereco->municipio, ENT_QUOTES, 'UTF-8'); ?>" id="municipio" class="form-control"/>
+                    <input type="text" name="municipio" value="" id="municipio" class="form-control"/>
                 </div>
 
 
@@ -116,7 +117,7 @@
                 </div>
             <div>
                <br>
-                <input type="submit" name="submit_update_cliente" value="Enviar" class="btn btn-primary"/>
+                <input type="submit" name="submit_add_cliente" value="Enviar" class="btn btn-primary"/>
             </div>
             <br/>
             <br/>
@@ -124,3 +125,22 @@
         </div>
     </div>
   </div>
+
+    <script>
+        function buscarEnderecoCepApi(cep){
+            $.ajax({url:'https://viacep.com.br/ws/'+cep+'/json/',
+                success: function(data)
+                {
+                    $('#logradouro').val(data.logradouro);
+                    $('#bairro').val(data.bairro);
+                    $('#municipio').val(data.localidade);
+                    $('#estado').val(data.uf);
+                    $('#cep').val(data.cep);
+
+                    debugger;
+                    console.log(data);
+                }
+            })
+        }
+
+    </script>
