@@ -7,7 +7,9 @@
 
 namespace Mini\Controller;
 
+use Exception;
 use Mini\Model\Cliente;
+use Mini\Model\Endereco;
 
 class ClientesController
 {
@@ -40,16 +42,31 @@ class ClientesController
      */
     public function add()
     {
+        try {
+       
+        
         // se tivermos dados POST para criar uma nova entrada do cliente
         if (isset($_POST["submit_add_cliente"])) {
             // Instanciar novo Model (Cliente)
             $Cliente = new Cliente();
+            $Endereco = new Endereco();
             // do add() em Model/Model.php
-            $Cliente->add($_POST["nome"], $_POST["email"],  $_POST["data_nasc"], $_POST["cpf"]);
+            $result=$Cliente->add($_POST ["razao_social"], $_POST["email"], $_POST["nome_fantasia"], $_POST["cnpj"], $_POST["telefone"]);
+            
+        
+        
+            if($result['success']==true){
+            $Endereco->add($_POST ["logradouro"], $_POST["numero"], $_POST["bairro"], $_POST["estado"], $_POST["municipio"], $_POST["pais"], $_POST["cep"],$result['id_cliente']);
+           }
+            
+            // onde ir depois que o cliente foi adicionado
+            header('location: ' . URL . 'clientes/index');
+     
         }
-
-        // onde ir depois que o cliente foi adicionado
-        header('location: ' . URL . 'clientes/index');
+    } catch(Exception $e ){
+        die($e->getMessage());
+    }  
+        
     }
 
     /**
@@ -86,9 +103,10 @@ class ClientesController
         if (isset($cliente_id)) {
             // Instanciar novo Model (Cliente)
             $Cliente = new Cliente();
+            $Endereco = new Endereco();
             // fazer getCliente() em Model/Model.php
             $cliente = $Cliente->getCliente($cliente_id);
-
+            $endereco = $Endereco->getEnderecocliente($cliente_id);
             // Se o cliente não foi encontrado, então ele teria retornado falso, e precisamos exibir a página de erro
             if ($cliente === false) {
                 $page = new \Mini\Controller\ErrorController();
@@ -116,15 +134,34 @@ class ClientesController
     public function update()
     {
         // se tivermos dados POST para criar uma nova entrada do cliente
+        
         if (isset($_POST["submit_update_cliente"])) {
             // Instanciar novo Model (Cliente)
             $Cliente = new Cliente();
+            $Endereco = new Endereco();
             // fazer update() do Model/Model.php
-            $Cliente->update($_POST["nome"], $_POST["email"],  $_POST["data_nasc"], $_POST["cpf"], $_POST['cliente_id']);
+        
+               
+
+
+            $result = $Cliente->update($_POST ["razao_social"], $_POST["email"], $_POST["nome_fantasia"], $_POST["cnpj"], $_POST["telefone"], $_POST["id_cliente"]);
+            if($result==true){
+                $Endereco->update($_POST ["logradouro"], $_POST["numero"], $_POST["bairro"], $_POST["estado"], $_POST["municipio"], $_POST["pais"], $_POST["cep"], $_POST["id_cliente"]);
+            }
+         
+    
         }
 
         // onde ir depois que o cliente foi adicionado
         header('location: ' . URL . 'clientes/index');
+    }
+
+    public function insert()
+    {
+                 // carregar a view clientes. nas views nós podemos mostrar $cliente facilmente
+                 require APP . 'view/_templates/header.php';
+                 require APP . 'view/clientes/insert.php';
+                 require APP . 'view/_templates/footer.php';
     }
 
     /**

@@ -7,15 +7,24 @@
 namespace Mini\Model;
 
 use Mini\Core\Model;
+use Mini\Libs\Helper;
 
 class Cliente extends Model
 {
     /**
      * Get all clientes from database
      */
+   
+    public $razao_social; 
+    public $email;
+    public $nome_fantasia;
+    public $cnpj; 
+    public $cliente_id;
+    public $telefone;
+
     public function getAllClientes()
     {
-        $sql = "SELECT id, nome, email, data_nasc, cpf FROM clientes";
+        $sql = "SELECT * FROM clientes";
         $query = $this->db->prepare($sql);
         $query->execute();
 
@@ -31,20 +40,23 @@ class Cliente extends Model
      * @param string $nome Nome
      * @param string $email E-mail
      * @param string $data_nasc Nascimento
-     * @param string $cpf CPF
+     * @param string $cnpj cnpj
      */
-    public function add($nome, $email, $data_nasc, $cpf)
+    public function add($razao_social, $email, $nome_fantasia, $cnpj, $telefone)
     {
-        $sql = "INSERT INTO clientes (nome, email, data_nasc, cpf) VALUES (:nome, :email, :data_nasc, :cpf)";
-        $query = $this->db->prepare($sql);
-        $parameters = array(':nome' => $nome, ':email' => $email, ':data_nasc' => $data_nasc, ':cpf' => $cpf);
-
-        // útil para debugar: você pode ver o SQL atrás da construção usando:
-        // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
-
-        $query->execute($parameters);
+        try{
+            $this->db->beginTransaction();
+            $sql = "INSERT INTO clientes (razao_social, email, nome_fantasia, cnpj, telefone) VALUES (:razao_social, :email, :nome_fantasia, :cnpj, :telefone)";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':razao_social' => $razao_social, ':email' => $email, ':nome_fantasia' => $nome_fantasia, ':cnpj' => $cnpj, ':telefone' => $telefone );
+        $this->db->commit();
+        return array('success' =>  $query->execute($parameters),
+                     'id_cliente'=> $this->db->lastInsertId()
+                    );
+        }catch(PDOException $e){
+            $this->db->rollback();
+        }
     }
-
     /**
      * Excluir um cliente do banco de dados
      * Por favor note: este é apenas um exemplo! Em uma aplicação real, você não deixaria simplesmente ninguém excluir
@@ -53,31 +65,30 @@ class Cliente extends Model
      */
     public function delete($cliente_id)
     {
+        $this->deleteEnderecoCliente($cliente_id);
         $sql = "DELETE FROM clientes WHERE id = :cliente_id";
         $query = $this->db->prepare($sql);
         $parameters = array(':cliente_id' => $cliente_id);
-
-        // útil para debugar: você pode ver o SQL atrás da construção usando:
-        // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
-
         $query->execute($parameters);
     }
 
+    public function deleteEnderecoCliente($cliente_id)
+    {
+        $sql = "DELETE FROM Enderecos WHERE id_cliente = :cliente_id";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':cliente_id' => $cliente_id);
+        $query->execute($parameters);
+    }
     /**
      * Receber um cliente do banco
      * @param integer $cliente_id
      */
     public function getCliente($cliente_id)
     {
-        $sql = "SELECT id, nome, email, data_nasc, cpf FROM clientes WHERE id = :cliente_id LIMIT 1";
+        $sql = "SELECT * FROM clientes WHERE id = :cliente_id LIMIT 1";
         $query = $this->db->prepare($sql);
         $parameters = array(':cliente_id' => $cliente_id);
-
-        // útil para debugar: você pode ver o SQL atrás da construção usando:
-        // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
-
         $query->execute($parameters);
-
         // fetch() é o método do PDO que recebe exatamente um registro
         return ($query->rowcount() ? $query->fetch() : false);
     }
@@ -87,19 +98,18 @@ class Cliente extends Model
      * @param string $nome Nome
      * @param string $email E-mail
      * @param string $data_nasc Nascimento
-     * @param string $cpf CPF
+     * @param string $cnpj cnpj
      * @param int $cliente_id Id
      */
-    public function update($nome, $email, $data_nasc, $cpf, $cliente_id)
+    public function update($razao_social, $email, $nome_fantasia, $cnpj, $telefone,  $cliente_id)
     {
-        $sql = "UPDATE clientes SET nome = :nome, email = :email, data_nasc = :data_nasc, cpf = :cpf WHERE id = :cliente_id";
+        $sql = "UPDATE clientes SET razao_social = :razao_social, email = :email, nome_fantasia = :nome_fantasia, cnpj = :cnpj, telefone = :telefone WHERE id = :cliente_id";
         $query = $this->db->prepare($sql);
-        $parameters = array(':nome' => $nome, ':email' => $email, ':data_nasc' => $data_nasc, 'cpf' => $cpf, ':cliente_id' => $cliente_id);
-
+        $parameters = array(':razao_social' => $razao_social, ':email' => $email, ':nome_fantasia' => $nome_fantasia, 'cnpj' => $cnpj, ':cliente_id' => $cliente_id, 'telefone'=>$telefone);
         // útil para debugar: você pode ver o SQL atrás da construção usando:
-        // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
-
-        $query->execute($parameters);
+        echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
+        return  $query->execute($parameters);
+        
     }
 
     /**
@@ -112,8 +122,6 @@ class Cliente extends Model
         $sql = "SELECT COUNT(id) AS amount_of_clientes FROM clientes";
         $query = $this->db->prepare($sql);
         $query->execute();
-
-        // fetch() é o método do PDO que recebe exatamente um registro
         return $query->fetch()->amount_of_clientes;
     }
 }
