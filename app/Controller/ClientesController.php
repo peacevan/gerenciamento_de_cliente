@@ -25,7 +25,6 @@ class ClientesController
         // receber todos os clientes e a quantidade de clientes
         $clientes = $Cliente->getAllClientes();// Esta propriedade é recebida na view: view/clientes/index.php em forma de array
         $amount_of_clientes = $Cliente->getAmountOfClientes(); // Esta propriedade também é recebida na view: view/clientes/index.php
-
        // Carregar a view clientes. Com as views nós podemos mostrar os $clientes e a $amount_of_clientes facilmente
         require APP . 'view/_templates/header.php';
         require APP . 'view/clientes/index.php';
