@@ -19,8 +19,7 @@ class ClientesController
      */
     public function index()
     {
-   
-	  // Instanciar novo Model (Cliente)
+   	  // Instanciar novo Model (Cliente)
         $Cliente = new Cliente();
         // receber todos os clientes e a quantidade de clientes
         $clientes = $Cliente->getAllClientes();// Esta propriedade é recebida na view: view/clientes/index.php em forma de array
