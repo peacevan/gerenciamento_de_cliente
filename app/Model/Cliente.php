@@ -65,7 +65,7 @@ class Cliente extends Model
      */
     public function delete($cliente_id)
     {
-        $this->deleteEnderecoCliente($cliente_id);
+       $result = $this->deleteEnderecoCliente($cliente_id);
         $sql = "DELETE FROM clientes WHERE id = :cliente_id";
         $query = $this->db->prepare($sql);
         $parameters = array(':cliente_id' => $cliente_id);
@@ -74,13 +74,14 @@ class Cliente extends Model
 
     public function deleteEnderecoCliente($cliente_id)
     {
-        $sql = "DELETE FROM Enderecos WHERE id_cliente = :cliente_id";
+        $sql = "DELETE FROM enderecos WHERE id_cliente = :cliente_id";
         $query = $this->db->prepare($sql);
         $parameters = array(':cliente_id' => $cliente_id);
+        //echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
         $query->execute($parameters);
     }
     /**
-     * Receber um cliente do banco
+     * Receber um buscarEnderecoCepApi cliente do banco
      * @param integer $cliente_id
      */
     public function getCliente($cliente_id)
@@ -92,7 +93,6 @@ class Cliente extends Model
         // fetch() é o método do PDO que recebe exatamente um registro
         return ($query->rowcount() ? $query->fetch() : false);
     }
-
     /**
      * Atualizar um cliente no banco
      * @param string $nome Nome
@@ -101,15 +101,26 @@ class Cliente extends Model
      * @param string $cnpj cnpj
      * @param int $cliente_id Id
      */
-    public function update($razao_social, $email, $nome_fantasia, $cnpj, $telefone,  $cliente_id)
+    public function update($request)
     {
-        $sql = "UPDATE clientes SET razao_social = :razao_social, email = :email, nome_fantasia = :nome_fantasia, cnpj = :cnpj, telefone = :telefone WHERE id = :cliente_id";
+        $sql =  "UPDATE clientes 
+                 SET razao_social = :razao_social, 
+                 email = :email, 
+                 nome_fantasia = :nome_fantasia, 
+                 cnpj = :cnpj, 
+                 telefone = :telefone 
+                 WHERE id = :cliente_id";
         $query = $this->db->prepare($sql);
-        $parameters = array(':razao_social' => $razao_social, ':email' => $email, ':nome_fantasia' => $nome_fantasia, 'cnpj' => $cnpj, ':cliente_id' => $cliente_id, 'telefone'=>$telefone);
+        $parameters = array(':razao_social'   => $request['razao_social'], 
+                             ':email'         => $request['email'], 
+                             ':nome_fantasia' => $request['nome_fantasia'], 
+                             ':cnpj'          => $request['cnpj'], 
+                             ':cliente_id'    => $request['cliente_id'], 
+                             ':telefone'      => $request['telefone']
+                            );
         // útil para debugar: você pode ver o SQL atrás da construção usando:
-        echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
-        return  $query->execute($parameters);
-        
+        // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
+      return   $query->execute($parameters);
     }
 
     /**

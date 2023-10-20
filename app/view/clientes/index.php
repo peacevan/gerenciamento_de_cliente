@@ -2,16 +2,15 @@
 
 <!--  <h3>Total de clientes: <//?php echo $amount_of_clientes; ?></h3>
         <h3>Total de clientes (via AJAX)</h3>   -->
-        <div id="javascript-ajax-result-box"></div>
+<div id="javascript-ajax-result-box"></div>
 
 <!-- <h3>Lista de clientes (dados do model)</h3> -->
 <a href="<?php echo URL . 'clientes/insert'; ?>" class="btn btn-primary" id="btn-novo-cliente">
  <i class="fas fa-user-plus"></i>
  Novo cliente 
-</a>
-<br>
-<br>
-<!-- <h3>Lista de clientes (dados do model)</h3> -->
+</a> 
+ </br>
+</br>
 <table id="table-cliente" class="table-striped">
     <thead style="background-color: #ddd; font-weight: bold;">
         <tr>
@@ -21,7 +20,7 @@
             <td>E-mail</td>
             <td>Telefone</td>
             <td>CNPJ</td>
-            <td>Editar</td>
+            <td>Edita</td>
             <td>Excluir</td>
         </tr>
     </thead>

@@ -1,7 +1,11 @@
 <?php
+
 /** Para mais informações sobre namespaces @veja http://php.net/manual/en/language.namespaces.importing.php */
 namespace Mini\Core;
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 class Application
 {
     /** @var null O controller */
@@ -95,15 +99,12 @@ class Application
             // Remover o controller e o action da URL dividida
             unset($url[0], $url[1]);
 
-           
-
             // Rebase array keys e armazene os parâmetros da URL
             $this->url_params = array_values($url);
-    
             // Para depuração. Descomente o código abaixo se você tiver problemas com o URL
-           // echo 'Controller: ' . $this->url_controller . '<br>';
+            // echo 'Controller: ' . $this->url_controller . '<br>';
             //echo 'Action: ' . $this->url_action . '<br>';
-          //  echo 'Parameters: ' . print_r($this->url_params, true) . '<br>';
+            //  echo 'Parameters: ' . print_r($this->url_params, true) . '<br>';
         }
     }
 }
