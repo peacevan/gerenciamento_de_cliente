@@ -40,11 +40,14 @@ class ProdutosController
     public function add()
     {
         // se tivermos dados POST para criar uma nova entrada do produto
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
         if (isset($_POST["submit_add_produto"])) {
             // Instanciar novo Model (Produto)
             $Produto = new Produto();
             // do add() em Model/Model.php
-            $Produto->add($_POST["descricao"], $_POST["unidade"]);
+            $result = $Produto->add($_POST);
         }
 
         // onde ir depois que o produto foi adicionado
@@ -102,6 +105,14 @@ class ProdutosController
             // redirecionar o usuário para a página de índice do produto (pois não temos um produto_id)
             header('location: ' . URL . 'produtos/index');
         }
+    }
+
+    public function insert()
+    {
+                 // carregar a view produtos. nas views nós podemos mostrar $cliente facilmente
+                 require APP . 'view/_templates/header.php';
+                 require APP . 'view/produtos/insert.php';
+                 require APP . 'view/_templates/footer.php';
     }
 
     /**

@@ -31,16 +31,22 @@ class Produto extends Model
      * @param string $descricao Descrição
      * @param string $unidade Unidade
      */
-    public function add($descricao, $unidade)
+    public function add($request)
     {
-        $sql = "INSERT INTO produtos (descricao, unidade) VALUES (:descricao, :unidade)";
-        $query = $this->db->prepare($sql);
-        $parameters = array(':descricao' => $descricao, ':unidade' => $unidade);
-
-        // útil para debugar: você pode ver o SQL atrás da construção usando:
-        // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
-
-        $query->execute($parameters);
+        try{
+            $this->db->beginTransaction();
+            $sql = "INSERT INTO produtos (descricao,  unidade, valor) VALUES (:descricao, :unidade, :valor)";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':descricao' => $request['descricao'], ':unidade' => $request['unidade'], ':valor' => $request['valor'] );
+        $this->db->commit();
+        $result = $query->execute($parameters);
+        //echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
+        return array('success' =>  $result ,
+                     'id_produtos'=> $this->db->lastInsertId()
+                    );
+        }catch(PDOException $e){
+            $this->db->rollback();
+        }
     }
 
     /**
@@ -67,7 +73,7 @@ class Produto extends Model
      */
     public function getProduto($produto_id)
     {
-        $sql = "SELECT id, descricao, unidade FROM produtos WHERE id = :produto_id LIMIT 1";
+        $sql = "SELECT id, descricao, unidade, valor FROM produtos WHERE id = :produto_id LIMIT 1";
         $query = $this->db->prepare($sql);
         $parameters = array(':produto_id' => $produto_id);
 
@@ -88,9 +94,9 @@ class Produto extends Model
      */
     public function update($descricao, $unidade, $produto_id)
     {
-        $sql = "UPDATE produtos SET descricao = :descricao, unidade = :unidade WHERE id = :produto_id";
+        $sql = "UPDATE produtos SET descricao = :descricao, unidade = :unidade, valor = :valor WHERE id = :produto_id";
         $query = $this->db->prepare($sql);
-        $parameters = array(':descricao' => $descricao, ':unidade' => $unidade, ':produto_id' => $produto_id);
+        $parameters = array(':descricao' => $descricao, ':unidade' => $unidade, ':valor' => $valor, ':produto_id' => $produto_id);
 
         // útil para debugar: você pode ver o SQL atrás da construção usando:
         // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();

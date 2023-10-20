@@ -321,19 +321,19 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="../../index.html" class="nav-link">
+              <a href="<?php echo URL; ?>produtos/index" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Listar </p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="../../index2.html" class="nav-link">
+              <a href="<?php echo URL; ?>produtos/insert" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Adicionar </p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="../../index3.html" class="nav-link">
+              <a href="<?php echo URL; ?>produtos/relatorio" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Relatório</p>
                 </a>
