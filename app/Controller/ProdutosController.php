@@ -135,7 +135,6 @@ class ProdutosController
         // Instance new Model (Produto)
         $Produto = new Produto();
         $amount_of_produtos = $Produto->getAmountOfProdutos();
-
         // simplesmente ecoar alguma coisa. Uma API supersimple seria possível fazendo eco ao JSON aqui
         echo $amount_of_produtos;
     }

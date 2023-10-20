@@ -7,6 +7,7 @@
 
 namespace Mini\Controller;
 
+use Exception;
 use Mini\Model\Funcionario;
 
 class FuncionariosController
@@ -17,18 +18,30 @@ class FuncionariosController
      */
     public function index()
     {
-        // Instanciar novo Model (Funcionario)
-        $Funcionario = new Funcionario();
-        // receber todos os Funcionarios e a quantidade de Funcionarios
-        $funcionarios = $Funcionario->getAllFuncionarios();
-        $amount_of_funcionarios = $Funcionario->getAmountOfFuncionarios();
+        try {
+            $Funcionario = new Funcionario();
+            $funcionarios = $Funcionario->getAllFuncionarios();
+            $amount_of_funcionarios = $Funcionario->getAmountOfFuncionarios();
 
-       // carregar a view funcionarios. com as views nós podemos mostrar os $funcionarios e a $amount_of_funcionarios facilmente
+        } catch (Exception $e) {
+
+            die('error: ' . $e->getMessage());
+        }
+
         require APP . 'view/_templates/header.php';
+
         require APP . 'view/funcionarios/index.php';
         require APP . 'view/_templates/footer.php';
-    }
 
+    }
+    public function insert()
+    {
+
+        // carregar a view clientes. nas views nós podemos mostrar $cliente facilmente
+        require APP . 'view/_templates/header.php';
+        require APP . 'view/funcionarios/insert.php';
+        require APP . 'view/_templates/footer.php';
+    }
     /**
      * ACTION: add
      * Este método manipula o que acontece quando acessamos http://localhost/projeto/funcionarios/add
@@ -40,17 +53,15 @@ class FuncionariosController
     public function add()
     {
         // se tivermos dados POST para criar uma nova entrada do funcionario
-        if (isset($_POST["submit_add_funcionario"])) {
+        if (isset($_POST["submit_insert_funcionario"])) {
             // Instanciar novo Model (Funcionario)
             $Funcionario = new Funcionario();
             // do add() em Model/Model.php
-            $Funcionario->add($_POST["nome"], $_POST["cpf"], $_POST["obs"]);
+            $Funcionario->add($_POST);
         }
-
         // onde ir depois que o funcionario foi adicionado
-        header('location: ' . URL . 'funcionarios/index');
+        $this->redirect('funcionarios/index');
     }
-
     /**
      * ACTION: delete
      * Este método lida com o que acontece quando você se move para http://localhost/projeto/funcionarios/delete
@@ -69,12 +80,10 @@ class FuncionariosController
             // fazer delete() em Model/Model.php
             $Funcionario->delete($funcionario_id);
         }
-
         // onde ir depois que o funcionario foi excluído
-        header('location: ' . URL . 'funcionarios/index');
+        $this->redirect('funcionarios/index');
     }
-
-     /**
+    /**
      * ACTION: edit
      * Este método lida com o que acontece quando você se move para http://localhost/projeto/funcionarios/edit
      * @param int $funcionario_id Id do funcionario a editar
@@ -100,7 +109,7 @@ class FuncionariosController
             }
         } else {
             // redirecionar o usuário para a página de índice do funcionario (pois não temos um funcionario_id)
-            header('location: ' . URL . 'funcionarios/index');
+            $this->redirect('funcionarios/index');
         }
     }
 
@@ -121,11 +130,8 @@ class FuncionariosController
             // fazer update() do Model/Model.php
             $Funcionario->update($_POST["nome"], $_POST["cpf"], $_POST["obs"], $_POST['funcionario_id']);
         }
-
-        // onde ir depois que o funcionario foi adicionado
-        header('location: ' . URL . 'funcionarios/index');
+        $this->redirect('funcionarios/index');
     }
-
     /**
      * AJAX-ACTION: ajaxGetStats
      * TODO documentação
@@ -135,9 +141,12 @@ class FuncionariosController
         // Instance new Model (Funcionario)
         $Funcionario = new Funcionario();
         $amount_of_funcionarios = $Funcionario->getAmountOfFuncionarios();
-
         // simplesmente ecoar alguma coisa. Uma API supersimple seria possível fazendo eco ao JSON aqui
         echo $amount_of_funcionarios;
+    }
+    public function redirect($url)
+    {
+        header('location: ' . URL . $url);
     }
 
 }

@@ -54,8 +54,8 @@ define('URL', URL_PROTOCOL . URL_DOMAIN . URL_SUB_FOLDER);
  * Este é o lugar onde você define suas credenciais de banco de dados, tipo de banco de dados, etc.
  */
 define('DB_TYPE', 'mysql');
-define('DB_HOST', 'rdsinstance.cnlwlfzaptgg.us-east-1.rds.amazonaws.com');
+define('DB_HOST', 'localhost');
 define('DB_NAME', 'cad_cliente');
 define('DB_USER', 'myrdsuser');
-define('DB_PASS', '34198500');
+define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');

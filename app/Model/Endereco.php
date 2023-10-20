@@ -78,14 +78,13 @@ class Endereco extends Model
         // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
         $query->execute($parameters);
     }
-
     /**
      * Receber um Endereco do banco
      * @param integer $Endereco_id
      */
     public function getEndereco($cliente_id)
     {
-        $sql = "SELECT * FROM enderecos WHERE id = :cliente_id LIMIT 1";
+        $sql = "SELECT id, nome, numero, data_nasc, estado FROM Enderecos WHERE id = :cliente_id LIMIT 1";
         $query = $this->db->prepare($sql);
         $parameters = array(':Endereco_id' => $cliente_id);
 
@@ -98,11 +97,9 @@ class Endereco extends Model
         return ($query->rowcount() ? $query->fetch() : false);
     }
 
-    /**
-     * Receber um Endereco do banco
-     * @param integer $Endereco_id
-     */
-    public function getEnderecocliente($cliente_id)
+
+    
+    public function getEnderecoCliente($cliente_id)
     {
         $sql = "SELECT * FROM enderecos WHERE id_cliente = :cliente_id LIMIT 1";
         $query = $this->db->prepare($sql);
@@ -117,7 +114,6 @@ class Endereco extends Model
         return ($query->rowcount() ? $query->fetch() : false);
     }
 
-
     /**
      * Atualizar um Endereco no banco
      * @param string $nome Nome
@@ -131,24 +127,36 @@ class Endereco extends Model
         $sql = "UPDATE enderecos SET logradouro = :logradouro, numero = :numero, bairro = :bairro, estado = :estado, municipio = :municipio, pais = :pais, cep = :cep WHERE id = :Endereco_id";
         $query = $this->db->prepare($sql);
         $parameters = array(':logradouro' => $logradouro, ':numero' => $numero, ':bairro' => $bairro, 'estado' => $estado, ':Endereco_id' => $Endereco_id, 'municipio'=>$municipio, 'pais'=>$pais, 'cep'=>$cep);
-
-    
         // útil para debugar: você pode ver o SQL atrás da construção usando:
         // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
-
         $query->execute($parameters);
     }
 
-    public function updateCliente($logradouro, $numero, $bairro, $estado, $municipio, $pais, $cep, $cliente_id)
+    public function updateEnderecoByCliente($resquestEndereco)
     {
-        $sql = "UPDATE enderecos SET logradouro = :logradouro, numero = :numero, bairro = :bairro, estado = :estado, municipio = :municipio, pais = :pais, cep = :cep WHERE id = :cliente_id";
+        $sql = "UPDATE enderecos SET 
+                logradouro = :logradouro, 
+                numero     = :numero,  
+                bairro     = :bairro, 
+                estado     = :estado, 
+                municipio  = :municipio, 
+                pais       = :pais, 
+                cep        = :cep 
+                WHERE id_cliente   = :cliente_id";
         $query = $this->db->prepare($sql);
-        $parameters = array(':logradouro' => $logradouro, ':numero' => $numero, ':bairro' => $bairro, 'estado' => $estado, 'municipio'=>$municipio, 'pais'=>$pais, 'cep'=>$cep, 'cliente_id'=>$cliente_id );
 
-    
+        $parameters = array(':logradouro'   => $resquestEndereco['logradouro'], 
+                             ':numero'      => $resquestEndereco['numero'], 
+                             ':bairro'      => $resquestEndereco['bairro'], 
+                             ':estado'      => $resquestEndereco['estado'], 
+                             ':cliente_id'  => $resquestEndereco['cliente_id'], 
+                             ':municipio'    => $resquestEndereco['municipio'],
+                             ':pais'        => $resquestEndereco['pais'], 
+                             ':cep'         => $resquestEndereco['cep']
+                            );
+
         // útil para debugar: você pode ver o SQL atrás da construção usando:
         // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
-
         $query->execute($parameters);
     }
 
@@ -162,7 +170,6 @@ class Endereco extends Model
         $sql = "SELECT COUNT(id) AS amount_of_Enderecos FROM Enderecos";
         $query = $this->db->prepare($sql);
         $query->execute();
-
         // fetch() é o método do PDO que recebe exatamente um registro
         return $query->fetch()->amount_of_Enderecos;
     }

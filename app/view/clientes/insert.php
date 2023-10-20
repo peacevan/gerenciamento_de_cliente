@@ -1,3 +1,5 @@
+
+
 <div class="col-md-12">
 
     <div class="card card-primary">
@@ -74,7 +76,6 @@
                 <div class="form-group">
                   <label for="estado">Estado</label>
                   <select class="custom-select form-control-border" name="estado" id="estado">
-                  <option value="">Informe seu estado</option>
                   <option value="AC">Acre</option>
                     <option value="AL">Alagoas</option>
                     <option value="AP">Amapá</option>
@@ -125,22 +126,71 @@
         </div>
     </div>
   </div>
+<script>
+    $(function() {
+        //Initialize Select2 Elements
+        $('.select2').select2()
 
-    <script>
-        function buscarEnderecoCepApi(cep){
-            $.ajax({url:'https://viacep.com.br/ws/'+cep+'/json/',
-                success: function(data)
-                {
-                    $('#logradouro').val(data.logradouro);
-                    $('#bairro').val(data.bairro);
-                    $('#municipio').val(data.localidade);
-                    $('#estado').val(data.uf);
-                    $('#cep').val(data.cep);
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
 
-                    debugger;
-                    console.log(data);
-                }
-            })
-        }
+        //Date and time picker
+        $('#reservationdatetime').datetimepicker({
+            icons: {
+                time: 'far fa-clock'
+            }
+        });
 
+        //Date range picker
+        $('#reservation').daterangepicker()
+        //Date range picker with time picker
+        $('#reservationtime').daterangepicker({
+            timePicker: true,
+            timePickerIncrement: 30,
+            locale: {
+                format: 'MM/DD/YYYY hh:mm A'
+            }
+        })
+    })
+    // BS-Stepper Init
+    document.addEventListener('DOMContentLoaded', function() {
+        window.stepper = new Stepper(document.querySelector('.bs-stepper'))
+    })
+    // DropzoneJS Demo Code Start
+    Dropzone.autoDiscover = false
+
+    // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
+    var previewNode = document.querySelector("#template")
+    previewNode.id = ""
+    var previewTemplate = previewNode.parentNode.innerHTML
+    previewNode.parentNode.removeChild(previewNode)
+
+    var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
+        url: "/target-url", // Set the url
+        thumbnailWidth: 80,
+        thumbnailHeight: 80,
+        parallelUploads: 20,
+        previewTemplate: previewTemplate,
+        autoQueue: false, // Make sure the files aren't queued until manually added
+        previewsContainer: "#previews", // Define the container to display the previews
+        clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
+    })
+
+
+
+    // DropzoneJS Demo Code End
+    function buscarEnderecoCepApi(cep) {
+          $.ajax({url:'https://viacep.com.br/ws/'+cep+'/json/',
+            success:function(data){
+              debugger;
+              $('#logradouro').val(data.logradouro);
+              $('#complemento').val(data.complemento);
+              $('#bairro').val(data.bairro);
+              $('#municipio').val(data.localidade);
+              $('#estado').val(data.uf);
+          }
+        })
+    }
     </script>
